@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class ItemState
@@ -225,6 +227,7 @@ public class MazeState
         return MoveResult.Valid;
     }
 
+    
     public int GetRoomValue(int x, int y)
     {
         //public const int MAP_CODE_CLEAR = 1001;
@@ -237,6 +240,47 @@ public class MazeState
         var floorMap = this.floors[this.currentFloorIdx];
         int roomVal = floorMap.map[y * 2 + 1][x * 2 + 1];
         return roomVal;
+    }
+    public MoveResult TestMoveCurNode(int2 curNode, int dx, int dy)
+    {
+        if ((Mathf.Abs(dx) + Mathf.Abs(dy) != 1)) return MoveResult.Invalid;
+
+        var floorMap = this.floors[this.currentFloorIdx];
+
+        int nx = curNode.x + dx;
+        int ny = curNode.y + dy;
+        if (nx < 0 || nx >= MAP_SIZE || ny < 0 || ny >= MAP_SIZE) return MoveResult.Invalid;
+        int wallVal = MAP_CODE_CLEAR;
+        int colMapX, colMapY;
+        if (dx != 0)
+        {
+            colMapX = (curNode.x + (dx == 1 ? 1 : 0)) * 2;
+            colMapY = curNode.y * 2 + 1;
+            wallVal = floorMap.map[colMapY][colMapX];
+        }
+        else
+        {
+            colMapX = curNode.x * 2 + 1;
+            colMapY = (curNode.y + (dy == 1 ? 1 : 0)) * 2;
+            wallVal = floorMap.map[colMapY][colMapX];
+        }
+
+        if (wallVal != MAP_CODE_CLEAR)
+        {
+            if(wallVal == MAP_CODE_DOOR_A)
+            {
+                return MoveResult.Require_Key_A;
+            }
+            else if (wallVal == MAP_CODE_DOOR_B)
+            {
+                return MoveResult.Require_Key_B;
+            }
+            else
+            {
+                return MoveResult.Invalid;
+            }
+        }
+        return MoveResult.Valid;
     }
 
     public Dictionary<string, string> OnMove(int dx, int dy)
@@ -364,4 +408,5 @@ public class MazeState
         }
         return true;
     }
+
 }
