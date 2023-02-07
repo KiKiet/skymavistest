@@ -20,6 +20,7 @@ public class GameMazeManager : MonoBehaviour
     private int count;
     private List<int2> pathPos;
     private List<Vector2Int> keyPos; 
+    private List<int> keys;
     Dictionary<string, List<IMazeObject>> pools = new Dictionary<string, List<IMazeObject>>();
 
     private void Awake()
@@ -346,29 +347,28 @@ public class GameMazeManager : MonoBehaviour
             }
             if(pathPos.Count==0){
                 pathPos = PathFinding(new int2(mazeState.axie.mapX, mazeState.axie.mapY),new int2(targetPos.x, targetPos.y));
-            }else{
-                if(count<pathPos.Count){
-                    this.MoveAxie(pathPos[count].x-mazeState.axie.mapX, pathPos[count].y-mazeState.axie.mapY);
-                    count++;
-                }
+            }else if(count<pathPos.Count){
+                this.MoveAxie(pathPos[count].x-mazeState.axie.mapX, pathPos[count].y-mazeState.axie.mapY);
+                count++;
                 this.MoveAxie(pathPos[count-1].x-mazeState.axie.mapX, pathPos[count-1].y-mazeState.axie.mapY);
             }
         }else{
-            // foreach (var itemState in floorMap.itemStates){
-            //     if (!itemState.available) continue;
-            //     if (itemState.code >= MazeState.MAP_CODE_KEY_A && itemState.code <= MazeState.MAP_CODE_KEY_B)
-            //     {
-            //         //Debug.Log($"{itemState.mapX},{itemState.mapY}");
-                    
-            //     }
-            // }
             if(pathPos.Count==0){
-                pathPos = PathFinding(new int2(mazeState.axie.mapX, mazeState.axie.mapY),new int2(keyPos[0].x, keyPos[0].y));
-            }else{
-                if(count<pathPos.Count){
-                    this.MoveAxie(pathPos[count].x-mazeState.axie.mapX, pathPos[count].y-mazeState.axie.mapY);
-                    count++;
+                if(keyPos.Count==1) pathPos = PathFinding(new int2(mazeState.axie.mapX, mazeState.axie.mapY),new int2(keyPos[0].x, keyPos[0].y));
+                else{
+                    while(true){
+                        foreach (var item in floorMap.itemStates){
+                            pathPos = PathFinding(new int2(mazeState.axie.mapX, mazeState.axie.mapY),new int2(item.mapX, item.mapY));
+                            if(checkKey(item.code,item.available))
+                                break;
+                            else continue;
+                        }
+                    break;
+                    }
                 }
+            }else if(count<pathPos.Count){
+                this.MoveAxie(pathPos[count].x-mazeState.axie.mapX, pathPos[count].y-mazeState.axie.mapY);
+                count++;
                 if(count==pathPos.Count){
                     count=0;
                     pathPos.Clear();
@@ -403,6 +403,27 @@ public class GameMazeManager : MonoBehaviour
         //         this.MoveAxie(mazeState.axie.mapX-path[i].x,mazeState.axie.mapY-path[i].y);
         //     }
         // }
+    }
+    private bool checkKey(int code, bool available){
+        bool result = true;
+        for (int cnt=0; cnt < pathPos.Count; cnt++){
+            if(mazeState.TestMove(pathPos[count].x-mazeState.axie.mapX, pathPos[count].y-mazeState.axie.mapY)==MoveResult.Require_Key_A&&code!=MazeState.MAP_CODE_KEY_A&&available){
+                result=false;
+                break;
+            }
+            else if (code == MazeState.MAP_CODE_KEY_A){
+                result=true;
+                break;
+            }
+            if(mazeState.TestMove(pathPos[count].x-mazeState.axie.mapX, pathPos[count].y-mazeState.axie.mapY)==MoveResult.Require_Key_B&&code!=MazeState.MAP_CODE_KEY_B&&available){
+                result = false;
+                break;
+            }else if(code == MazeState.MAP_CODE_KEY_B){
+                result=true;
+                break;
+            }
+        }
+        return result;
     }
     private List<int2> PathFinding (int2 sPos, int2 ePos){
         int2 gridSize = new int2(MazeState.MAP_SIZE,MazeState.MAP_SIZE);
