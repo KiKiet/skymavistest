@@ -396,13 +396,6 @@ public class GameMazeManager : MonoBehaviour
         // {
         //     this.MoveAxie(0, 1);
         // }
-        // List<Node> path = FindPath(mazeState.axie.mapX, mazeState.axie.mapY, targetPos.x, targetPos.y);
-        // if (path != null){
-        //     for (int i=0; i < path.Count - 1; i++){
-        //         Debug.Log(path[i].ToString());
-        //         this.MoveAxie(mazeState.axie.mapX-path[i].x,mazeState.axie.mapY-path[i].y);
-        //     }
-        // }
     }
     private bool checkKey(int code, bool available){
         bool result = true;
@@ -574,108 +567,6 @@ public class GameMazeManager : MonoBehaviour
         }
         return lowestCostNode.index;
     }
-    // public List<Node> FindPath(int sX, int sY, int eX, int eY){
-    //     Node startNode = new Node(sX,sY);
-    //     Node endNode = new Node(eX,eY);
-    //     if (startNode == null || endNode == null){
-    //         return null;
-    //     }
-    //     openList = new List<Node> { startNode };
-    //     closedList = new List<Node>();
-    //     for (int x = 0; x < MazeState.MAP_SIZE; x++){
-    //         for (int y = 0; y < MazeState.MAP_SIZE; y++){
-    //             Node node = new Node(x,y);
-    //             node.gCost=99999999;
-    //             node.CalculateFCost();
-    //             node.cameFromNode = null;
-    //         }
-    //     }
-    //     startNode.gCost = 0;
-    //     startNode.hCost = CalHCost(startNode,endNode);
-    //     startNode.CalculateFCost();
-
-        
-    //     while(openList.Count>0){
-    //         Node curNode = GetLowestFCost(openList);
-    //         if (curNode == endNode){
-    //             return CalPath(endNode);
-    //         }
-
-    //         openList.Remove(curNode);
-    //         closedList.Add(curNode);
-
-    //         foreach(Node neighbourNode in GetNeighbourList(curNode)){
-    //             if (closedList.Contains(neighbourNode)) continue;
-    //             else {
-    //                 closedList.Add(neighbourNode);
-    //             }
-    //             int tentativeGCost = curNode.gCost + CalHCost(curNode,neighbourNode);
-    //             if(tentativeGCost<neighbourNode.gCost){
-    //                 neighbourNode.cameFromNode = curNode;
-    //                 neighbourNode.gCost = tentativeGCost;
-    //                 neighbourNode.hCost = CalHCost(neighbourNode,endNode);
-    //                 neighbourNode.CalculateFCost();
-
-    //                 if(!openList.Contains(neighbourNode)){
-    //                     openList.Add(neighbourNode);
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     return null;
-    // }
-
-    // private int CalHCost(Node sNode, Node eNode){
-    //     int xDis = Mathf.Abs(sNode.x-eNode.x);
-    //     int yDis = Mathf.Abs(sNode.y-eNode.y);
-    //     int dis = Mathf.Abs(xDis+yDis);
-    //     return dis;
-    // }
-    // private Node GetLowestFCost(List<Node> Node){
-    //     Node lowestF = Node[0];
-    //     for (int i = 1; i < Node.Count; i++){
-    //         if (Node[i].fCost < lowestF.fCost){
-    //             lowestF = Node[i];
-    //         }
-    //     }
-    //     return lowestF;
-    // }
-    // private List<Node> CalPath(Node eNode){
-    //     List<Node> path = new List<Node>();
-    //     path.Add(eNode);
-    //     Node curNode = eNode;
-    //     while (curNode.cameFromNode != null){
-    //         path.Add(curNode.cameFromNode);
-    //         curNode = curNode.cameFromNode;
-    //     }
-    //     path.Reverse();
-    //     return path;
-    // }
-    // private List<Node> GetNeighbourList(Node curNode){
-    //     List<Node> neighbourList = new List<Node>();
-
-    //     if (mazeState.TestMove2(curNode, -1, 0) == MoveResult.Valid)
-    //     {
-    //         neighbourList.Add(GetNode(curNode.x - 1,curNode.y));
-    //     }
-    //     else if (mazeState.TestMove2(curNode,1, 0) == MoveResult.Valid)
-    //     {
-    //         neighbourList.Add(GetNode(curNode.x + 1,curNode.y));
-    //     }
-    //     else if (mazeState.TestMove2(curNode, 0, -1) == MoveResult.Valid)
-    //     {
-    //         neighbourList.Add(GetNode(curNode.x,curNode.y-1));
-    //     }
-    //     else if (mazeState.TestMove2(curNode, 0, 1) == MoveResult.Valid)
-    //     {
-    //         neighbourList.Add(GetNode(curNode.x,curNode.y + 1));
-    //     }
-    //     return neighbourList;
-    // }
-    // private Node GetNode(int x, int y){
-    //     Node node = new Node(x,y);
-    //     return node;
-    // }
     private struct Node{
         public int x;
         public int y;
